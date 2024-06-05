@@ -32,6 +32,6 @@ public class ClassEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "class",cascade = CascadeType.ALL,orphanRemoval = false,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "classEntity",cascade = CascadeType.ALL,orphanRemoval = false,fetch = FetchType.LAZY)
     private List<Lesson> lessons;
 }
