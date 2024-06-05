@@ -19,10 +19,14 @@ public class Multimedia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
     private TypeMultimedia type;
+    @Column(nullable = false)
     @Lob
     private String url;
+
     private LocalDateTime createdAt;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 

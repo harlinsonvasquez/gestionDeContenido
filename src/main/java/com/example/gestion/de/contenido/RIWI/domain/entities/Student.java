@@ -22,7 +22,9 @@ public class Student {
     private String name;
     @Column(length = 100,nullable = false)
     private String email;
+    @Column(nullable = false)
     private LocalDateTime createdAt;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
