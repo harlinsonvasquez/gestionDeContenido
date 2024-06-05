@@ -23,6 +23,8 @@ public class ClassEntity {
     private String description;
     @Column(nullable = false)
     private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
 
     @ToString.Exclude
@@ -34,4 +36,8 @@ public class ClassEntity {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "classEntity",cascade = CascadeType.ALL,orphanRemoval = false,fetch = FetchType.LAZY)
     private List<Lesson> lessons;
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
