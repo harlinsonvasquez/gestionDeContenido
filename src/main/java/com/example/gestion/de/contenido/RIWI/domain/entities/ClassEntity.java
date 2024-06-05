@@ -1,9 +1,11 @@
 package com.example.gestion.de.contenido.RIWI.domain.entities;
 
+import com.example.gestion.de.contenido.RIWI.utils.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name="class")
 @Data
@@ -21,11 +23,11 @@ public class ClassEntity {
     private String description;
     @Column(nullable = false)
     private LocalDateTime createdAt;
-    private boolean active;
+
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "class",cascade = CascadeType.ALL,orphanRemoval = false,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "classEntity",cascade = CascadeType.ALL,orphanRemoval = false,fetch = FetchType.LAZY)
     private List<Student> students;
 
     @ToString.Exclude
