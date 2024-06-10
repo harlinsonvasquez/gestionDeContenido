@@ -19,5 +19,6 @@ public class MultimediaBasicResp {
     private String url;
     private LocalDateTime createdAt;
     private Status status;
+    private LessonBasicResp lessonId;
 
 }

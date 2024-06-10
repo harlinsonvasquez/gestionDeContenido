@@ -1,12 +1,16 @@
 package com.example.gestion.de.contenido.RIWI.infrastructure.services;
 
 import com.example.gestion.de.contenido.RIWI.api.dto.request.MultimediaReq;
+import com.example.gestion.de.contenido.RIWI.api.dto.response.LessonBasicResp;
 import com.example.gestion.de.contenido.RIWI.api.dto.response.MultimediaBasicResp;
+import com.example.gestion.de.contenido.RIWI.domain.entities.ClassEntity;
+import com.example.gestion.de.contenido.RIWI.domain.entities.Lesson;
 import com.example.gestion.de.contenido.RIWI.domain.entities.Multimedia;
 import com.example.gestion.de.contenido.RIWI.domain.repositories.LessonRepository;
 import com.example.gestion.de.contenido.RIWI.domain.repositories.MultimediaRepository;
 import com.example.gestion.de.contenido.RIWI.infrastructure.abstract_service.IMultimediaService;
 import com.example.gestion.de.contenido.RIWI.utils.enums.SortType;
+import com.example.gestion.de.contenido.RIWI.utils.exceptions.BadRequestException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +27,12 @@ public class MultimediaService implements IMultimediaService {
     private final LessonRepository lessonRepository;
     @Override
     public MultimediaBasicResp create(MultimediaReq request) {
-        Multimedia multimedia = requestToEntity(request);
-        multimedia = multimediaRepository.save(multimedia);
-        return entityToResp(multimedia);
+
+        Lesson lesson = this.lessonRepository.findById(request.getLessonId())
+                .orElseThrow(() -> new BadRequestException("no hay registros de clases con ese id"));
+        Multimedia multimedia = this.requestToEntity(request);
+        multimedia.setLesson(lesson);
+        return this.entityToResp(this.multimediaRepository.save(multimedia));
     }
     private Multimedia requestToEntity(MultimediaReq request) {
         Multimedia multimedia = new Multimedia();
@@ -33,11 +40,15 @@ public class MultimediaService implements IMultimediaService {
         return multimedia;
     }
     private MultimediaBasicResp entityToResp(Multimedia entity) {
+        LessonBasicResp lesson=new LessonBasicResp();
+        BeanUtils.copyProperties(entity.getLesson(), lesson);
+
         return MultimediaBasicResp.builder()
                 .id(entity.getId())
                 .type(entity.getType())
                 .url(entity.getUrl())
                 .status(entity.getStatus())
+                .lessonId(lesson)
                 .createdAt(entity.getCreatedAt())
                 .build();
     }

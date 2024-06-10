@@ -1,5 +1,6 @@
 package com.example.gestion.de.contenido.RIWI.api.dto.response;
 
+import com.example.gestion.de.contenido.RIWI.utils.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class LessonBasicResp {
     private Long id;
     private String title;
     private String content;
+    private Status status;
     private LocalDateTime createdAt;
-    private List<MultimediaBasicResp> multimedia;
+    //private List<MultimediaBasicResp> multimedia;
 }

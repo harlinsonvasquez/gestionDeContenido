@@ -26,8 +26,8 @@ public class Lesson {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL,orphanRemoval = false,fetch = FetchType.LAZY)
-    private List<Multimedia> multimedia;
+    @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
+    private List<Multimedia> multimediaList;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "class_id",referencedColumnName = "id")

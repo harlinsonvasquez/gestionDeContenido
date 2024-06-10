@@ -20,4 +20,6 @@ public class MultimediaReq {
     private String url;
     private Status status;
     private Long lessonId;
+
+
 }
