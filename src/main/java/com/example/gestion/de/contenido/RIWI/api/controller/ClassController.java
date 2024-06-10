@@ -4,6 +4,7 @@ import com.example.gestion.de.contenido.RIWI.api.dto.request.ClassReq;
 import com.example.gestion.de.contenido.RIWI.api.dto.request.StudentReq;
 import com.example.gestion.de.contenido.RIWI.api.dto.response.ClassEntityBasic;
 import com.example.gestion.de.contenido.RIWI.api.dto.response.ClassEntityResp;
+import com.example.gestion.de.contenido.RIWI.api.dto.response.StudentBasicResp;
 import com.example.gestion.de.contenido.RIWI.api.dto.response.StudentResp;
 import com.example.gestion.de.contenido.RIWI.infrastructure.abstract_service.IClassService;
 import com.example.gestion.de.contenido.RIWI.utils.enums.SortType;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping(path = "/clases")
 @AllArgsConstructor
@@ -23,13 +25,15 @@ public class ClassController {
     @Autowired
     private final IClassService classService;
     @GetMapping
-    public Page<ClassEntityBasic> getAllUsers(
+    public ResponseEntity<Page<ClassEntityBasic>> getAllClasses(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "NONE") SortType sort) {
+            @RequestParam(defaultValue = "ASC") SortType sort,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description) {
 
-        Page<ClassEntityBasic> ClassEntityBasicRespPage = classService.getAll(page, size, sort);
-        return new PageImpl<>(ClassEntityBasicRespPage.getContent(), ClassEntityBasicRespPage.getPageable(), ClassEntityBasicRespPage.getTotalElements());
+        Page<ClassEntityBasic> classes = classService.getAllBasic(page, size, sort, name, description);
+        return ResponseEntity.ok().body(classes);
     }
     @GetMapping("/{id}/students")
     public ClassEntityResp getClassWithStudentsById(@PathVariable Long id) {

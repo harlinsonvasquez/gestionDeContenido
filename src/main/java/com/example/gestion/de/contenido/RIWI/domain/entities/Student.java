@@ -28,9 +28,11 @@ public class Student {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // relacion de muchos a uno ya que una clase puede tener muchos estudiantes
+    @ManyToOne(fetch = FetchType.LAZY)//carga perezosa para que no se cargue hasta que se necesite
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     private ClassEntity classEntity;
+    // este metodo se ejecuta antes de que se cree el objeto y toma la hora actual y la fecha de creacion
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

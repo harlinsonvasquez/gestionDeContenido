@@ -20,14 +20,16 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
     @Autowired
     private final IStudentService studentService;
+
     @GetMapping
-    public Page<StudentResp> getAllUsers(
+    public ResponseEntity<Page<StudentBasicResp>> getAllStudents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "NONE") SortType sort) {
+            @RequestParam(defaultValue = "ASC") SortType sort,
+            @RequestParam(required = false) String name) {
 
-        Page<StudentResp> StudentRespPage = studentService.getAll(page, size, sort);
-        return new PageImpl<>(StudentRespPage.getContent(), StudentRespPage.getPageable(), StudentRespPage.getTotalElements());
+        Page<StudentBasicResp> students = studentService.getAllBasic(page, size, sort, name);
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping(path = "/{id}")
@@ -38,6 +40,12 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<StudentResp>insert(@Validated @RequestBody StudentReq request){
         return ResponseEntity.ok(this.studentService.create(request));
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<StudentResp>updateupdate(
+            @Validated @RequestBody StudentReq request,
+            @PathVariable Long id){
+        return ResponseEntity.ok(this.studentService.update(request, id));
     }
     @PatchMapping("/{id}/{status}")
     public ResponseEntity<StudentResp> updateStudentStatus(@PathVariable Long id, @PathVariable String status) {

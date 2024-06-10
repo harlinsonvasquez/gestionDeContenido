@@ -32,4 +32,9 @@ public class Lesson {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "class_id",referencedColumnName = "id")
     private ClassEntity classEntity;
+    // este metodo se ejecuta antes de que se cree el objeto y toma la hora actual y la fecha de creacion
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

@@ -20,9 +20,10 @@ public class StudentReq {
     @NotBlank(message = "elnombre del estudiante es requerido")
     @Size(min = 1,max = 50)
     private String name;
-    @Email()
+    @NotNull(message = "el correo del estudiante es requerido")
+    @Email(message = "el correo del estudiante debe ser valido")
     private String email;
     @NotNull(message = "el estado del estudiante es requerido")
     private Status status;
-    private Long classId;
+    private Long classEntity;
 }

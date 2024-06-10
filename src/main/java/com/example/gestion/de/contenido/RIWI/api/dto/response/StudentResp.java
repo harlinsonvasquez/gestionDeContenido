@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentResp extends StudentBasicResp {
-    private ClassEntityBasic claseId;
+public class StudentResp extends StudentBasicResp {//extends StudentBasicResp pero incluye la clase del estudiante
+    private ClassEntityBasic classEntity;
 
 }

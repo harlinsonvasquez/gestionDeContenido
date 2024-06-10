@@ -34,6 +34,37 @@ public class ClassEntityService implements IClassService {
     @Autowired
     private final StudentRepository studentRepository;
 
+    private PageRequest getPageRequest(int page, int size, SortType sort) {
+        if (page < 0) page = 0;
+        Sort.Direction direction = sort.equals(SortType.DESC) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        return PageRequest.of(page, size, Sort.by(direction, "id"));
+    }
+    @Override
+    public Page<ClassEntityBasic> getAllBasic(int page, int size, SortType sort, String name, String description) {
+
+        PageRequest pageRequest = getPageRequest(page, size, sort);
+
+        if (name != null && !name.isEmpty() && description != null && !description.isEmpty()) {
+            return classEntityRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndStatus(
+                           name, description,  Status.ASSET, pageRequest)
+                    .map(this::entityToResp);
+        } else if (name != null && !name.isEmpty()) {
+            return classEntityRepository.findByNameContainingIgnoreCaseAndStatus(name, Status.ASSET, pageRequest)
+                    .map(this::entityToResp);
+        } else if (description != null && !description.isEmpty()) {
+            return classEntityRepository.findByDescriptionContainingIgnoreCaseAndStatus(description, Status.ASSET, pageRequest)
+                    .map(this::entityToResp);
+        } else {
+            return classEntityRepository.findByStatus(Status.ASSET, pageRequest)
+                    .map(this::entityToResp);
+        }
+    }
+
+    @Override
+    public Page<ClassEntityBasic> getAll(int page, int size, SortType sort) {
+        return null;
+    }
+
     @Override
     public ClassEntityBasic patch(Long id, Status status) {
         ClassEntity classEntity=this.find(id);
@@ -58,17 +89,7 @@ public class ClassEntityService implements IClassService {
         return null;
     }
 
-    @Override
-    public Page<ClassEntityBasic> getAll(int page, int size, SortType sort) {
-        PageRequest pageRequest = getPageRequest(page, size, sort);
 
-        return classEntityRepository.findAll(pageRequest).map(this::entityToResp);
-    }
-    private PageRequest getPageRequest(int page, int size, SortType sort) {
-        if (page < 0) page = 0;
-        Sort.Direction direction = sort.equals(SortType.DESC) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        return PageRequest.of(page, size, Sort.by(direction, "id"));
-    }
     private ClassEntity find(Long id){
         return this.classEntityRepository.findById(id).orElseThrow(()-> new BadRequestException("no hay registros de clase con ese id"));
     }
@@ -82,14 +103,7 @@ public class ClassEntityService implements IClassService {
         BeanUtils.copyProperties(request,classEntity);
         return classEntity;
     }
-    public List<Student> getStudentsByClassId(Long classId) {
-        Optional<ClassEntity> classEntityOptional = classEntityRepository.findById(classId);
-        if (classEntityOptional.isPresent()) {
-            return classEntityOptional.get().getStudents();
-        } else {
-            throw new RuntimeException("Class with ID " + classId + " not found");
-        }
-    }
+
     public ClassEntityResp getClassWithStudentsById(Long classId) {
         Optional<ClassEntity> classEntityOptional = classEntityRepository.findById(classId);
         if (classEntityOptional.isPresent()) {
@@ -107,6 +121,9 @@ public class ClassEntityService implements IClassService {
                         StudentBasicResp studentResponse = new StudentBasicResp();
                         studentResponse.setId(student.getId());
                         studentResponse.setName(student.getName());
+                        studentResponse.setEmail(student.getEmail());
+                        studentResponse.setCreatedAt(student.getCreatedAt());
+                        studentResponse.setStatus(student.getStatus());
                         studentResponse.setId(student.getClassEntity().getId());
                         return studentResponse;
                     }).collect(Collectors.toList());
@@ -117,6 +134,8 @@ public class ClassEntityService implements IClassService {
             throw new RuntimeException("Class with ID " + classId + " not found");
         }
     }
+
+
 }
 
 

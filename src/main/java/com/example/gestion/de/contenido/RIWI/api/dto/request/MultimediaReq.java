@@ -18,7 +18,6 @@ public class MultimediaReq {
     private Long id;
     private TypeMultimedia type;
     private String url;
-    private LocalDateTime createdAt;
     private Status status;
-    private LessonResp lessonId;
+    private Long lessonId;
 }

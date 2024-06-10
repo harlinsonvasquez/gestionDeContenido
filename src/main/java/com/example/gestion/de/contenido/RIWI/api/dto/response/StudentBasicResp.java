@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentBasicResp {
+public class StudentBasicResp {//clase basica para la respuesta de los estudiante sin la clase
         private Long id;
         private String name;
         private String email;
-        private LocalDateTime createdAt;
+        private LocalDateTime createdAt;//fecha de creacion
         private Status status;
 }

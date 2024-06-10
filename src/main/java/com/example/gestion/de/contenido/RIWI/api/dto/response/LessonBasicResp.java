@@ -17,5 +17,5 @@ public class LessonBasicResp {
     private String title;
     private String content;
     private LocalDateTime createdAt;
-    private List<MultimediaResp> multimedia;
+    private List<MultimediaBasicResp> multimedia;
 }

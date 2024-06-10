@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MultimediaResp {
+public class MultimediaBasicResp {
     private Long id;
     private TypeMultimedia type;
     private String url;

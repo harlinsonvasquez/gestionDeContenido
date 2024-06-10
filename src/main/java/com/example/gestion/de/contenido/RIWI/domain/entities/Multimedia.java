@@ -33,4 +33,9 @@ public class Multimedia {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id",referencedColumnName = "id")
     private Lesson lesson;
+    // este metodo se ejecuta antes de que se cree el objeto y toma la hora actual y la fecha de creacion
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
