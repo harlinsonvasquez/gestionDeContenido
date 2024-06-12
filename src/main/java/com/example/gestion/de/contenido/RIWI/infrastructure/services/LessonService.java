@@ -33,8 +33,7 @@ public class LessonService implements ILessonService {
     private final LessonRepository lessonRepository;
     @Autowired
     private final ClassEntityRepository classEntityRepository;
-    @Autowired
-    private final MultimediaRepository multimediaRepository;
+
 
     @Override
     public LessonResp patch(Long id, Status status) {
