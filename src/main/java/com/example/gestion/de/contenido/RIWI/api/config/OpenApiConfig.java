@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration//para configurar beans dentro de spring
 @OpenAPIDefinition(
-        info = @Info(title = "Api para gestion de contenido",
+        info = @Info(title = "Api para gestion de contenido para un colegio",
                 version = "1.0",
                 description = "Api para gestion de contenido de estudiantes,cursos,lesiones y contenido multimedia")
 )

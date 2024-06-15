@@ -21,7 +21,7 @@ public class    LessonResp {
     private Status status;
     private ClassEntityBasic classEntity;
 
-    private List<MultimediaBasicResp> multimediaList;
+    private List<MultimediaResp> multimediaList;
 
 
 }

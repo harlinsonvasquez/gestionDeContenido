@@ -5,6 +5,7 @@ import com.example.gestion.de.contenido.RIWI.api.dto.request.MultimediaReq;
 import com.example.gestion.de.contenido.RIWI.api.dto.response.ClassEntityBasic;
 import com.example.gestion.de.contenido.RIWI.api.dto.response.LessonResp;
 import com.example.gestion.de.contenido.RIWI.api.dto.response.MultimediaBasicResp;
+import com.example.gestion.de.contenido.RIWI.api.dto.response.MultimediaResp;
 import com.example.gestion.de.contenido.RIWI.domain.entities.Lesson;
 import com.example.gestion.de.contenido.RIWI.domain.entities.Multimedia;
 import com.example.gestion.de.contenido.RIWI.domain.repositories.ClassEntityRepository;
@@ -14,6 +15,7 @@ import com.example.gestion.de.contenido.RIWI.infrastructure.abstract_service.ILe
 import com.example.gestion.de.contenido.RIWI.utils.enums.SortType;
 import com.example.gestion.de.contenido.RIWI.utils.enums.Status;
 import com.example.gestion.de.contenido.RIWI.utils.exceptions.BadRequestException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -67,7 +69,7 @@ public class LessonService implements ILessonService {
             multimedia.setUrl(multimediaRequest.getUrl());
             multimedia.setType(multimediaRequest.getType());
             multimedia.setStatus(multimediaRequest.getStatus());
-            multimedia.setLesson(lesson);
+            //multimedia.setLesson(lesson);
             multimediaList.add(multimedia);
         }
 
@@ -84,11 +86,16 @@ public class LessonService implements ILessonService {
         return mapToLessonResp(lesson);
     }
 
+    @Transactional
     @Override
     public LessonResp update(LessonReq request, Long id) {
         Lesson lesson = lessonRepository.findById(id).orElseThrow(() -> new BadRequestException("Lesson not found with id " + id));
         lesson.setTitle(request.getTitle());
         lesson.setContent(request.getContent());
+        lesson.setStatus(request.getStatus());
+
+        // Limpiar la colección existente para manejar eliminaciones de huérfanos
+        lesson.getMultimediaList().clear();
 
         List<Multimedia> multimediaList = new ArrayList<>();
         for (MultimediaReq multimediaRequest : request.getMultimediaList()) {
@@ -99,14 +106,16 @@ public class LessonService implements ILessonService {
             Multimedia multimedia = new Multimedia();
             multimedia.setUrl(multimediaRequest.getUrl());
             multimedia.setType(multimediaRequest.getType());
-            multimedia.setLesson(lesson);
+            multimedia.setLesson(lesson);  // Asegurar que la lección esté correctamente asignada
+            multimedia.setStatus(multimediaRequest.getStatus());
             multimediaList.add(multimedia);
         }
 
-        lesson.setMultimediaList(multimediaList);
+        lesson.getMultimediaList().addAll(multimediaList);  // Agregar todos los elementos a la colección existente
         Lesson updatedLesson = lessonRepository.save(lesson);
         return mapToLessonResp(updatedLesson);
     }
+
 
     @Override
     public Page<LessonResp> getAll(int page, int size, SortType sort) {
@@ -132,9 +141,9 @@ public class LessonService implements ILessonService {
 
         // Mapeo de Multimedia
         if (lesson.getMultimediaList() != null) {
-            List<MultimediaBasicResp> multimediaResponses = new ArrayList<>();
+            List<MultimediaResp> multimediaResponses = new ArrayList<>();
             for (Multimedia multimedia : lesson.getMultimediaList()) {
-                MultimediaBasicResp multimediaResponse = new MultimediaBasicResp();
+                MultimediaResp multimediaResponse = new MultimediaResp();
                 multimediaResponse.setId(multimedia.getId());
                 multimediaResponse.setUrl(multimedia.getUrl());
                 multimediaResponse.setType(multimedia.getType());
